@@ -1,13 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const TeamSchema = new Schema({
-  name: String,
-  department: String,
-  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  project: [ProjectSchema],
-});
-
 const ProjectSchema = new Schema(
   {
     name: String,
@@ -20,4 +13,12 @@ const ProjectSchema = new Schema(
     timestamps: true,
   }
 );
+
+const TeamSchema = new Schema({
+  name: String,
+  department: String,
+  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  project: [ProjectSchema],
+});
+
 module.exports = mongoose.model("Team", TeamSchema);

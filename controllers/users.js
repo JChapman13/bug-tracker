@@ -22,9 +22,8 @@ async function create(req, res) {
     const { firstName, lastName, email, password } = req.body;
     // if (!userName || !password || !firstName || !lastName || !email || !phone)
     //   return res.status(400).json("empty field");
-    console.log(User.find({ email: email }));
-    if (User.find({ email: email }))
-      return res.status(400).json({ message: "username already exsist" });
+    // if (User.find({ email: email }))
+    //   return res.status(400).json({ message: "username already exsist" });
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await User.create({

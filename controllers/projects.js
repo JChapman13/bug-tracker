@@ -1,4 +1,3 @@
-const Project = require("../models/Project.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 

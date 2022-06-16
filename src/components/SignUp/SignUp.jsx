@@ -144,9 +144,7 @@ export default function SignUp(props) {
         password: data.get("password"),
       })
       .then((res) => {
-        console.log(res.data);
-        console.log(res.data.authToken);
-        sessionStorage.setItem("usertoken", res.data);
+        sessionStorage.setItem("usertoken", res.data.authToken);
         props.handleLogin();
       })
       .catch((err) => console.log(err));
