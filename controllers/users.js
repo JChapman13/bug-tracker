@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 async function create(req, res) {
   try {
-    console.log("This is being hit");
     const { firstName, lastName, email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);

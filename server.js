@@ -23,6 +23,7 @@ app.use("/api", usersRoute);
 app.use(require("./config/auth"));
 
 app.use("/api", dashboardRoute);
+app.use("/api", usersRoute);
 app.use("/api", projectsRoute);
 app.use("/api", ticketsRoute);
 app.use("/api", teamsRoute);

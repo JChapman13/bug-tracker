@@ -11,7 +11,6 @@ const CommentSchema = new Schema(
     timestamps: true,
   }
 );
-
 const TicketSchema = new Schema(
   {
     id: String,
