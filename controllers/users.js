@@ -18,22 +18,12 @@ const signJWTToken = (user) => {
 };
 
 async function create(req, res) {
-<<<<<<< HEAD
 	try {
 		const { firstName, lastName, email, password } = req.body;
 		// if (!userName || !password || !firstName || !lastName || !email || !phone)
 		//   return res.status(400).json("empty field");
-		// console.log(User.find({ email: email }));
 		// if (User.find({ email: email }))
 		//   return res.status(400).json({ message: "username already exsist" });
-=======
-  try {
-    const { firstName, lastName, email, password } = req.body;
-    // if (!userName || !password || !firstName || !lastName || !email || !phone)
-    //   return res.status(400).json("empty field");
-    // if (User.find({ email: email }))
-    //   return res.status(400).json({ message: "username already exsist" });
->>>>>>> 6475cff75b0fb6c804549a0d9ea53dafe6886ce7
 
 		const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 		const user = await User.create({

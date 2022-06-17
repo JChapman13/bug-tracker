@@ -15,7 +15,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupsIcon from "@mui/icons-material/Groups";
-
+import {Link} from 'react-router-dom'
 const drawerWidth = 240;
 
 export default function ClippedDrawer() {
@@ -64,6 +64,7 @@ export default function ClippedDrawer() {
             </ListItem>
             <ListItem disablePadding>
               <ListItemButton>
+                <Link to ="/tickets"/>
                 <ListItemIcon>
                   <ViewListIcon />
                 </ListItemIcon>
