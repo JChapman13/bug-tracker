@@ -11,7 +11,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axios from "axios";
 
 const theme = createTheme();
 
@@ -29,125 +28,36 @@ export default function SignUp(props) {
     lastName: "",
     email: "",
   });
-  // const [checks, setChecks] = useState({
-  //   passwordCharacter: false,
-  //   passwordNum: false,
-  //   passwordLetter: false,
-  //   passwordconfirm: false,
-  //   firstNameCharacter: false,
-  //   lastNameCharacter: false,
-  //   emailValid: false,
-  //   userNameInput: true,
-  //   passwordInput: true,
-  //   confirmInput: true,
-  //   firstNameInput: true,
-  //   lastNameInput: true,
-  //   emailInput: true,
-  // });
 
   const handleChange = async (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
-    // runChecks(e);
   };
 
-  // const runChecks = (field) => {
-  // if (field.target.name === "password") {
-  //   return isPasswordValid(field.target.value);
-  // }
-  // if (field.target.name === "confirm")
-  //   return isPasswordMatch(field.target.value);
-  // if (field.target.name === "firstName")
-  //   return isfirstNameValid(field.target.value);
-  // if (field.target.name === "lastName")
-  //   return islastNameValid(field.target.value);
-  // if (field.target.name === "email") return isEmailValid(field.target.value);
-  // };
-
-  // const isPasswordValid = () => {
-  //   console.log(user.password.length);
-  //   if (user.password.length + 1 >= 8) {
-  //     setChecks({ ...checks, passwordCharacter: true });
-  //   } else {
-  //     setChecks({ ...checks, passwordCharacter: false });
-  //   }
-
-  //   if (letterRegex.test(user.password)) {
-  //     setChecks({ ...checks, passwordLetter: true });
-  //   } else {
-  //     setChecks({ ...checks, passwordLetter: false });
-  //   }
-
-  //   if (numRegex.test(user.password)) {
-  //     setChecks({ ...checks, passwordNum: true });
-  //   } else {
-  //     setChecks({ ...checks, passwordNum: false });
-  //   }
-  // };
-
-  // const isPasswordMatch = (value) => {
-  //   if (user.password === user.confirm && user.password.length >= 8) {
-  //     setChecks({ ...checks, passwordconfirm: true });
-  //   } else {
-  //     setChecks({ ...checks, passwordconfirm: false });
-  //   }
-  // };
-
-  // const isfirstNameValid = (value) => {
-  //   console.log(user.firstName);
-  //   if (
-  //     !value.includes(" ") &&
-  //     user.firstName.length > 0 &&
-  //     letterRegex.test(value) &&
-  //     !numRegex.test(value)
-  //   ) {
-  //     setChecks({ ...checks, firstNameCharacter: true });
-  //   } else {
-  //     setChecks({ ...checks, firstNameCharacter: false });
-  //   }
-  // };
-
-  // const islastNameValid = () => {
-  //   if (
-  //     !user.lastName.includes(" ") &&
-  //     user.lastName.length > 0 &&
-  //     letterRegex.test(user.lastName) &&
-  //     !numRegex.test(user.firstName)
-  //   ) {
-  //     setChecks({ ...checks, lastNameCharacter: true });
-  //   } else {
-  //     setChecks({ ...checks, lastNameCharacter: false });
-  //   }
-  // };
-
-  // const isEmailValid = () => {
-  //   if (emailRegex.test(user.email)) {
-  //     setChecks({ ...checks, emailValid: true });
-  //   } else {
-  //     setChecks({ ...checks, emailValid: false });
-  //   }
-  // };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(
-      data.get("firstName"),
-      data.get("lastName"),
-      data.get("email"),
-      data.get("password")
-    );
-    axios
-      .post("api/signup", {
-        firstName: data.get("firstName"),
-        lastName: data.get("lastName"),
-        email: data.get("email"),
-        password: data.get("password"),
-      })
-      .then((res) => {
-        sessionStorage.setItem("usertoken", res.data.authToken);
-        props.handleLogin();
-      })
-      .catch((err) => console.log(err));
+    try {
+      const fetchResponse = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          password: user.password,
+        }),
+      });
+
+      if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+
+      let token = await fetchResponse.json();
+      localStorage.setItem("token", token);
+
+      const userDoc = JSON.parse(atob(token.split(".")[1])).user;
+      console.log(userDoc);
+      props.setUserInState(userDoc);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -244,12 +154,13 @@ export default function SignUp(props) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit}
             >
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" onClick={props.setView}>
                   Already have an account? Sign in
                 </Link>
               </Grid>

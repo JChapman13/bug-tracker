@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -15,7 +16,20 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SignIn(props) {
+  const [userCredentials, setUserCredentials] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (event) => {
+    console.log(event.target);
+    setUserCredentials({
+      ...userCredentials,
+      [event.target.name]: event.target.value,
+    });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -23,6 +37,29 @@ export default function SignIn() {
       email: data.get("email"),
       password: data.get("password"),
     });
+  };
+
+  const handleLogin = async (event) => {
+    try {
+      const fetchResponse = await fetch("/api/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password,
+        }),
+      });
+
+      if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+
+      let token = await fetchResponse.json();
+      localStorage.setItem("token", token);
+
+      const userDoc = JSON.parse(atob(token.split(".")[1])).user;
+      props.setUserInState(userDoc);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -58,6 +95,8 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={userCredentials.email}
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -68,6 +107,8 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={userCredentials.password}
+              onChange={handleChange}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -78,6 +119,7 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleLogin}
             >
               Sign In
             </Button>
@@ -88,7 +130,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" onClick={props.setView}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

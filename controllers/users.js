@@ -5,25 +5,10 @@ const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 6;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const signJWTToken = (user) => {
-  const token = jwt.sign(
-    {
-      id: user.id,
-    },
-    JWT_SECRET,
-    { expiresIn: "8h" }
-  );
-
-  return token;
-};
-
 async function create(req, res) {
   try {
+    console.log("This is being hit");
     const { firstName, lastName, email, password } = req.body;
-    // if (!userName || !password || !firstName || !lastName || !email || !phone)
-    //   return res.status(400).json("empty field");
-    // if (User.find({ email: email }))
-    //   return res.status(400).json({ message: "username already exsist" });
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await User.create({
@@ -33,23 +18,11 @@ async function create(req, res) {
       password: hashedPassword,
     });
 
-    const tokenInfo = { id: user.id };
-    const token = signJWTToken(tokenInfo);
-    res.status(200).json({ authToken: token });
+    const token = jwt.sign({ user }, JWT_SECRET, { expiresIn: "8h" });
+    res.status(200).json(token);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
-  }
-}
-
-async function getUser(req, res) {
-  try {
-    const user = await User.find({ _id: req.body.id });
-
-    const token = jwt.sign({ user }, JWT_SECRET, { expiresIn: "24h" });
-    res.status(200).json(token);
-  } catch {
-    res.status(400).json("Bad Credentials");
   }
 }
 
@@ -60,7 +33,7 @@ async function login(req, res) {
     if (!(await bcrypt.compare(req.body.password, user.password)))
       throw new Error("Password incorrect");
 
-    const token = jwt.sign({ user }, process.env.SECRET, { expiresIn: "24h" });
+    const token = jwt.sign({ user }, JWT_SECRET, { expiresIn: "8h" });
     res.status(200).json(token);
   } catch (err) {
     res.status(400).json(err);
@@ -70,5 +43,4 @@ async function login(req, res) {
 module.exports = {
   create,
   login,
-  getUser,
 };
