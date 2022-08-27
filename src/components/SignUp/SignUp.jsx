@@ -50,7 +50,7 @@ export default function SignUp(props) {
       if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
 
       let token = await fetchResponse.json();
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token);
 
       const userDoc = JSON.parse(atob(token.split(".")[1])).user;
       console.log(userDoc);

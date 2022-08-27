@@ -1,0 +1,18 @@
+.teams-page-wrapper {
+  margin-left: 16rem;
+}
+
+.teams-banner {
+  margin-left: 16rem;
+  height: 10vh;
+  box-shadow: none;
+}
+
+.teams-menu-banner {
+  margin-left: 16rem;
+}
+
+.teams-page-header {
+  margin-left: 16rem;
+  color: red;
+}
