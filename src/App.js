@@ -6,6 +6,7 @@ import DirectoryPage from "./containers/DirectoryPage/DirectoryPage";
 import ProfilePage from "./containers/ProfilePage/ProfilePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CreateEmployeePage from "./containers/CreateEmployeePage/CreateEmployee";
+import EditEmployeePage from "./containers/EditEmployeePage/EditEmployeePage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -60,6 +61,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/directory" element={<DirectoryPage />} />
               <Route path="/create-employee" element={<CreateEmployeePage />} />
+              <Route path="/edit-employee" element={<EditEmployeePage />} />
             </Routes>
           </>
         )}

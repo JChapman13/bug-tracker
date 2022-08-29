@@ -12,29 +12,145 @@ import {
   TableRow,
   TableBody,
   IconButton,
+  TablePagination,
+  Collapse,
+  Box,
+  Typography,
+  InputLabel,
+  TextField,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-function Employees(props) {
+function Employees({ employeeList }) {
   const [checked, setChecked] = useState(false);
+
   useEffect(() => {
     setChecked(true);
   }, []);
 
+  function Row(info) {
+    const [open, setOpen] = useState(false);
+    console.log(info.emp);
+
+    return (
+      <React.Fragment>
+        <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+          <TableCell component="th" scope="row">
+            {info.emp.firstName + " " + info.emp.lastName}
+          </TableCell>
+          <TableCell align="left">{info.emp.role}</TableCell>
+          <TableCell align="left">{info.emp.team}</TableCell>
+          <TableCell align="left">{info.emp.email}</TableCell>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <EditIcon />}
+            </IconButton>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  Edit Info
+                </Typography>
+                <Table size="small" aria-label="purchases">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <InputLabel id="demo-simple-select-label">
+                          First Name
+                        </InputLabel>
+                        <TextField
+                          autoComplete="given-name"
+                          name="firstName"
+                          required
+                          fullWidth
+                          id="firstName"
+                          autoFocus
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <InputLabel id="demo-simple-select-label">
+                          First Name
+                        </InputLabel>
+                        <TextField
+                          autoComplete="given-name"
+                          name="firstName"
+                          required
+                          fullWidth
+                          id="firstName"
+                          autoFocus
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <InputLabel id="demo-simple-select-label">
+                          First Name
+                        </InputLabel>
+                        <TextField
+                          autoComplete="given-name"
+                          name="firstName"
+                          required
+                          fullWidth
+                          id="firstName"
+                          autoFocus
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <InputLabel id="demo-simple-select-label">
+                          First Name
+                        </InputLabel>
+                        <TextField
+                          autoComplete="given-name"
+                          name="firstName"
+                          required
+                          fullWidth
+                          id="firstName"
+                          autoFocus
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <InputLabel id="demo-simple-select-label">
+                          First Name
+                        </InputLabel>
+                        <TextField
+                          autoComplete="given-name"
+                          name="firstName"
+                          required
+                          fullWidth
+                          id="firstName"
+                          autoFocus
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody></TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    );
+  }
   return (
     <div>
       <div className="teams-page-wrapper">
         <Grid container spacing={2} direction="column">
           <Grow in={checked} {...(checked ? { timeout: 1000 } : {})}>
-            <Grid item xs={10} md={5}>
+            <Grid item xs={12}>
               <Paper
                 elevation={3}
                 sx={{
-                  height: "75vh",
-                  width: "50rem",
                   margin: "auto",
                   marginTop: "15vh",
+                  width: "100%",
                 }}
               >
                 <Paper
@@ -65,33 +181,18 @@ function Employees(props) {
                   </Button>
                 </Paper>
                 <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead sx={{ textDecoration: "underline" }}>
+                  <Table aria-label="collapsible table">
+                    <TableHead>
                       <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell align="right">Role</TableCell>
-                        <TableCell align="right">Team</TableCell>
-                        <TableCell align="right">Email</TableCell>
+                        <TableCell align="left">Name</TableCell>
+                        <TableCell align="left">Role</TableCell>
+                        <TableCell align="left">Team</TableCell>
+                        <TableCell align="left">Email</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {props.employeeList.map((emp, idx) => (
-                        <TableRow
-                          key={emp.firstName + idx}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {emp.firstName + " " + emp.lastName}
-                          </TableCell>
-                          <TableCell align="right">{emp.role}</TableCell>
-                          <TableCell align="right">{emp.team}</TableCell>
-                          <TableCell align="right">{emp.email}</TableCell>
-                          <IconButton aria-label="delete" id={emp._id}>
-                            <EditIcon />
-                          </IconButton>
-                        </TableRow>
+                      {employeeList.map((emp, idx) => (
+                        <Row key={emp._id} emp={emp} />
                       ))}
                     </TableBody>
                   </Table>

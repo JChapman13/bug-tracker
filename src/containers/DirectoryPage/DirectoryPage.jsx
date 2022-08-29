@@ -28,8 +28,10 @@ function DirectoryPage() {
   return (
     <div className="teams-page-wrapper">
       <Grid container spacing={2} direction="column">
-        <DirectoryPageNav togglePageView={togglePageView} />
-        {toggleView ? <Teams /> : <Employees employeeList={employeeList} />}
+        <Grid item xs={12} sm={6}>
+          <DirectoryPageNav togglePageView={togglePageView} />
+          {toggleView ? <Teams /> : <Employees employeeList={employeeList} />}
+        </Grid>
       </Grid>
     </div>
   );
