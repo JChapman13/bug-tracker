@@ -23,7 +23,6 @@ export default function SignIn(props) {
   });
 
   const handleChange = (event) => {
-    console.log(event.target);
     setUserCredentials({
       ...userCredentials,
       [event.target.name]: event.target.value,
@@ -31,35 +30,7 @@ export default function SignIn(props) {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
-
-  const handleLogin = async (event) => {
-    try {
-      const fetchResponse = await fetch("/api/user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: this.state.email,
-          password: this.state.password,
-        }),
-      });
-
-      if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
-
-      let token = await fetchResponse.json();
-      localStorage.setItem("token", token);
-
-      const userDoc = JSON.parse(atob(token.split(".")[1])).user;
-      props.setUserInState(userDoc);
-    } catch (err) {
-      console.log(err);
-    }
+    props.handleLogin(userCredentials);
   };
 
   return (
@@ -82,7 +53,7 @@ export default function SignIn(props) {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={() => handleSubmit()}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -119,7 +90,7 @@ export default function SignIn(props) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleLogin}
+              onClick={() => handleSubmit()}
             >
               Sign In
             </Button>

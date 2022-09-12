@@ -1,5 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const teamCtrl = require("../controllers/teams");
+const directoryCtrl = require("../controllers/directory");
 
 module.exports = router;

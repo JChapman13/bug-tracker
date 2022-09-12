@@ -14,7 +14,11 @@ function AuthPage(props) {
       {toggleView ? (
         <SignUp setUserInState={props.setUserInState} setView={setView} />
       ) : (
-        <Login setUserInState={props.setUserInState} setView={setView} />
+        <Login
+          setUserInState={props.setUserInState}
+          setView={setView}
+          handleLogin={props.handleLogin}
+        />
       )}
     </>
   );

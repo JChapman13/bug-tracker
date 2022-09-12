@@ -15,30 +15,35 @@ import FolderIcon from "@mui/icons-material/Folder";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupsIcon from "@mui/icons-material/Groups";
-
-const drawerWidth = 240;
+import PeopleIcon from "@mui/icons-material/People";
+import "./Navbar.css";
 
 export default function ClippedDrawer() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        position="sticky"
+        className="app-bar"
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          width: "15rem",
+        }}
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Clipped drawer
+            Project Tracker
           </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
         variant="permanent"
+        className="app-drawer"
         sx={{
-          width: drawerWidth,
+          width: "15rem",
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
+            width: "15rem",
             boxSizing: "border-box",
           },
         }}
@@ -52,6 +57,14 @@ export default function ClippedDrawer() {
                   <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary="My Team" />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
@@ -71,11 +84,11 @@ export default function ClippedDrawer() {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton href="/directory">
                 <ListItemIcon>
                   <GroupsIcon />
                 </ListItemIcon>
-                <ListItemText primary="Team" />
+                <ListItemText primary="Directory" />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
