@@ -7,7 +7,6 @@ import {
   Button,
   Paper,
   Grow,
-  InputBase,
   TextField,
   InputLabel,
   Select,

@@ -73,7 +73,55 @@ async function getEmployees(req, res) {
   }
 }
 
+async function editEmployee(req, res) {
+  try {
+    console.log("test");
+    const { id, firstName, lastName, email, role, team } = req.body;
+    console.log(id);
+
+    await Employee.findByIdAndUpdate(
+      id,
+      {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        role: role,
+        team: team,
+      },
+      function (err, result) {
+        if (err) {
+          res.status(304).json(err);
+        } else {
+          res.status(200).json(result);
+        }
+      }
+    ).clone();
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+}
+
+async function deleteEmployee(req, res) {
+  try {
+    const id = req.body.id;
+    console.log(id);
+
+    await Employee.findByIdAndDelete(id, function (err, docs) {
+      if (err) {
+        res.status(304).json(err);
+      } else {
+        res.status(200).json(docs);
+      }
+    }).clone();
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+}
 module.exports = {
   create,
   getEmployees,
+  editEmployee,
+  deleteEmployee,
 };

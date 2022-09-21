@@ -13,6 +13,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function EditEmployeePage(props) {
   const [checked, setChecked] = useState(false);
@@ -23,9 +24,12 @@ function EditEmployeePage(props) {
     role: "",
     team: "",
   });
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setChecked(true);
+    setEmployeeInfo(location.state);
   }, []);
 
   const handleChange = (event) => {
@@ -35,7 +39,28 @@ function EditEmployeePage(props) {
     });
   };
 
-  const handleSubmit = async (event) => {};
+  const handleSubmit = async (event) => {
+    try {
+      const fetchResponse = await fetch("/api/edit-employee", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: employeeInfo._id,
+          firstName: employeeInfo.firstName,
+          lastName: employeeInfo.lastName,
+          email: employeeInfo.email,
+          role: employeeInfo.role,
+          team: employeeInfo.team,
+        }),
+      });
+
+      if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+
+      navigate("/directory");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
@@ -79,6 +104,7 @@ function EditEmployeePage(props) {
                     id="firstName"
                     autoFocus
                     onChange={handleChange}
+                    value={employeeInfo.firstName}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -92,6 +118,7 @@ function EditEmployeePage(props) {
                     name="lastName"
                     autoComplete="family-name"
                     onChange={handleChange}
+                    value={employeeInfo.lastName}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -103,6 +130,7 @@ function EditEmployeePage(props) {
                     name="email"
                     autoComplete="email"
                     onChange={handleChange}
+                    value={employeeInfo.email}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -134,6 +162,7 @@ function EditEmployeePage(props) {
                     label="Role"
                     sx={{ width: "100%" }}
                     onChange={handleChange}
+                    value={employeeInfo.team}
                   />
                 </Grid>
               </Grid>
@@ -142,9 +171,9 @@ function EditEmployeePage(props) {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={handleSubmit}
+                onClick={() => handleSubmit()}
               >
-                Add Employee
+                Submit
               </Button>
             </Paper>
           </Grid>

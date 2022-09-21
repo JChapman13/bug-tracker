@@ -12,28 +12,44 @@ import {
   TableRow,
   TableBody,
   IconButton,
-  TablePagination,
-  Collapse,
-  Box,
-  Typography,
-  InputLabel,
-  TextField,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
 
 function Employees({ employeeList }) {
   const [checked, setChecked] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setChecked(true);
   }, []);
 
-  function Row(info) {
-    const [open, setOpen] = useState(false);
-    console.log(info.emp);
+  const handleEdit = (emp) => {
+    console.log(emp);
+    navigate("/edit-employee", { state: emp });
+  };
 
+  const handleDelete = async (emp) => {
+    try {
+      const fetchResponse = await fetch("/api/delete-employee", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: emp._id,
+        }),
+      });
+
+      if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+
+      navigate("/directory");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  function Row(info) {
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -47,93 +63,19 @@ function Employees({ employeeList }) {
             <IconButton
               aria-label="expand row"
               size="small"
-              onClick={() => setOpen(!open)}
+              onClick={() => handleEdit(info.emp)}
             >
-              {open ? <KeyboardArrowUpIcon /> : <EditIcon />}
+              <EditIcon />
             </IconButton>
           </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                <Typography variant="h6" gutterBottom component="div">
-                  Edit Info
-                </Typography>
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <InputLabel id="demo-simple-select-label">
-                          First Name
-                        </InputLabel>
-                        <TextField
-                          autoComplete="given-name"
-                          name="firstName"
-                          required
-                          fullWidth
-                          id="firstName"
-                          autoFocus
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <InputLabel id="demo-simple-select-label">
-                          First Name
-                        </InputLabel>
-                        <TextField
-                          autoComplete="given-name"
-                          name="firstName"
-                          required
-                          fullWidth
-                          id="firstName"
-                          autoFocus
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <InputLabel id="demo-simple-select-label">
-                          First Name
-                        </InputLabel>
-                        <TextField
-                          autoComplete="given-name"
-                          name="firstName"
-                          required
-                          fullWidth
-                          id="firstName"
-                          autoFocus
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <InputLabel id="demo-simple-select-label">
-                          First Name
-                        </InputLabel>
-                        <TextField
-                          autoComplete="given-name"
-                          name="firstName"
-                          required
-                          fullWidth
-                          id="firstName"
-                          autoFocus
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <InputLabel id="demo-simple-select-label">
-                          First Name
-                        </InputLabel>
-                        <TextField
-                          autoComplete="given-name"
-                          name="firstName"
-                          required
-                          fullWidth
-                          id="firstName"
-                          autoFocus
-                        />
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody></TableBody>
-                </Table>
-              </Box>
-            </Collapse>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => handleDelete(info.emp)}
+            >
+              <DeleteIcon />
+            </IconButton>
           </TableCell>
         </TableRow>
       </React.Fragment>

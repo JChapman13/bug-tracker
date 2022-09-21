@@ -4,10 +4,13 @@ import "./DirectoryPage.css";
 import DirectoryPageNav from "../../components/DirectoryPageNav/DirectoryPageNav";
 import Teams from "../../components/Teams/Teams";
 import Employees from "../../components/Employees/Employees";
+import { useLocation } from "react-router-dom";
 
 function DirectoryPage() {
   const [toggleView, setToggleView] = useState(true);
   const [employeeList, setEmployeeList] = useState({});
+
+  const location = useLocation();
 
   const togglePageView = (e) => {
     setToggleView(!toggleView);
@@ -23,7 +26,7 @@ function DirectoryPage() {
         setEmployeeList(empList);
       })
     );
-  }, []);
+  }, [location]);
 
   return (
     <div className="teams-page-wrapper">
