@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import Navbar from "./navbar/Navbar";
 import Dashboard from "./containers/Dashboard/Dashboard";
 import AuthPage from "./containers/AuthPage/AuthPage";
-import DirectoryPage from "./containers/DirectoryPage/DirectoryPage";
 import ProfilePage from "./containers/ProfilePage/ProfilePage";
+import TeamsPage from "./containers/TeamsPage/TeamsPage";
+import EmployeesPage from "./containers/EmployeesPage/EmployeesPage";
+import CreateTeamPage from "./containers/TeamsPage/CreateTeamPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CreateEmployeePage from "./containers/CreateEmployeePage/CreateEmployee";
-import EditEmployeePage from "./containers/EditEmployeePage/EditEmployeePage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -59,9 +59,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/directory" element={<DirectoryPage />} />
-              <Route path="/create-employee" element={<CreateEmployeePage />} />
-              <Route path="/edit-employee" element={<EditEmployeePage />} />
+              <Route path="/teams" element={<TeamsPage />} />
+              <Route path="/teams/create" element={<CreateTeamPage />} />
+              <Route path="/employees" element={<EmployeesPage />} />
             </Routes>
           </>
         )}

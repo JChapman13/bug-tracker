@@ -1,47 +1,144 @@
-import "./Teams.css";
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import React, { useEffect, useState } from "react";
+import {
+  Paper,
+  Grid,
+  Grow,
+  Button,
+  InputBase,
+  Table,
+  TableContainer,
+  TableHead,
+  TableCell,
+  TableRow,
+  TableBody,
+  IconButton,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
 
 function Teams() {
+  const [checked, setChecked] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setChecked(true);
+  }, []);
+
+  const handleEdit = (emp) => {
+    console.log(emp);
+    navigate("/edit-team", { state: emp });
+  };
+
+  const handleDelete = async (emp) => {
+    try {
+      const fetchResponse = await fetch("/api/delete-team", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+
+      if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  function Row(info) {
+    return (
+      <React.Fragment>
+        <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+          <TableCell component="th" scope="row">
+            {info.emp.firstName + " " + info.emp.lastName}
+          </TableCell>
+          <TableCell align="left">{info.emp.role}</TableCell>
+          <TableCell align="left">{info.emp.team}</TableCell>
+          <TableCell align="left">{info.emp.email}</TableCell>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => handleEdit(info.emp)}
+            >
+              <EditIcon />
+            </IconButton>
+          </TableCell>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => handleDelete(info.emp)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    );
+  }
+
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Team Name</TableCell>
-              <TableCell align="right">Department</TableCell>
-              <TableCell align="right">Project Name</TableCell>
-              <TableCell align="right">Project Manager</TableCell>
-              <TableCell align="right"># of Developers</TableCell>
-              <TableCell align="right"># of Open Tickets</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+    <div>
+      <div className="teams-page-wrapper">
+        <Grid container spacing={2} direction="column">
+          <Grow in={checked} {...(checked ? { timeout: 1000 } : {})}>
+            <Grid item xs={12}>
+              <Paper
+                elevation={3}
+                sx={{
+                  margin: "auto",
+                  marginTop: "15vh",
+                  width: "100%",
+                }}
               >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
-              </TableRow>
-            ))} */}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+                <Paper
+                  elevation={1}
+                  sx={{
+                    backgroundColor: "#d1d9ff",
+                    height: "5vh",
+                  }}
+                >
+                  <SearchIcon
+                    sx={{
+                      fontSize: "2rem",
+                      marginTop: "1rem",
+                      marginLeft: "1rem",
+                    }}
+                  />
+                  <InputBase
+                    placeholder="Search the current employee roster..."
+                    id="standard-basic"
+                    variant="standard"
+                    sx={{
+                      width: "30rem",
+                      padding: "1rem",
+                    }}
+                  />
+                </Paper>
+                <TableContainer component={Paper}>
+                  <Table aria-label="collapsible table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="left">Name</TableCell>
+                        <TableCell align="left">Role</TableCell>
+                        <TableCell align="left">Team</TableCell>
+                        <TableCell align="left">Email</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {/* {employeeList.map((emp, idx) => (
+                        <Row key={emp._id} emp={emp} />
+                      ))} */}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+          </Grow>
+        </Grid>
+      </div>
+    </div>
   );
 }
 

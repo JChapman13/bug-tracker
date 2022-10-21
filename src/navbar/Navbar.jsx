@@ -84,11 +84,19 @@ export default function ClippedDrawer() {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton href="/directory">
+              <ListItemButton href="/teams">
                 <ListItemIcon>
                   <GroupsIcon />
                 </ListItemIcon>
-                <ListItemText primary="Directory" />
+                <ListItemText primary="Teams" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton href="/employees">
+                <ListItemIcon>
+                  <GroupsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Employees" />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>

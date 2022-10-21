@@ -15,7 +15,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-function CreateEmployeePage() {
+function CreateEmployee() {
   const [checked, setChecked] = useState(false);
   const [employeeInfo, setEmployeeInfo] = useState({
     firstName: "",
@@ -177,4 +177,4 @@ function CreateEmployeePage() {
   );
 }
 
-export default CreateEmployeePage;
+export default CreateEmployee;

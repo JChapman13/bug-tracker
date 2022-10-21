@@ -27,7 +27,6 @@ function Employees({ employeeList }) {
   }, []);
 
   const handleEdit = (emp) => {
-    console.log(emp);
     navigate("/edit-employee", { state: emp });
   };
 
@@ -42,8 +41,6 @@ function Employees({ employeeList }) {
       });
 
       if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
-
-      navigate("/directory");
     } catch (err) {
       console.log(err);
     }

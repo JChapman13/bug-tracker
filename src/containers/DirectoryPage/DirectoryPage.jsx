@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 function DirectoryPage() {
   const [toggleView, setToggleView] = useState(true);
   const [employeeList, setEmployeeList] = useState({});
+  const [teamList, setTeamList] = useState({});
 
   const location = useLocation();
 
@@ -28,12 +29,28 @@ function DirectoryPage() {
     );
   }, [location]);
 
+  useEffect(() => {
+    fetch("/api/teams").then((res) =>
+      res.json().then((token) => {
+        let result = JSON.parse(atob(token.split(".")[1])).employees;
+        let sortTeamList = result.sort((a, b) =>
+          a.firstName.localeCompare(b.firstName)
+        );
+        setTeamList(sortTeamList);
+      })
+    );
+  }, [location]);
+
   return (
     <div className="teams-page-wrapper">
       <Grid container spacing={2} direction="column">
         <Grid item xs={12} sm={6}>
           <DirectoryPageNav togglePageView={togglePageView} />
-          {toggleView ? <Teams /> : <Employees employeeList={employeeList} />}
+          {toggleView ? (
+            <Teams teamList={teamList} />
+          ) : (
+            <Employees employeeList={employeeList} />
+          )}
         </Grid>
       </Grid>
     </div>
