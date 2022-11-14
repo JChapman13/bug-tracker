@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 function Employees({ employeeList }) {
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
-
+  console.log(employeeList);
   useEffect(() => {
     setChecked(true);
   }, []);

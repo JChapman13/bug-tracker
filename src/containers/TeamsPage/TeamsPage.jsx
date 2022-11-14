@@ -5,18 +5,20 @@ import Teams from "../../components/Teams/Teams";
 
 export default function TeamsPage() {
   const [teamList, setTeamList] = useState({});
+  const [employeeList, setEmployeeList] = useState();
 
-  // useEffect(() => {
-  //   fetch("/api/teams").then((res) =>
-  //     res.json().then((token) => {
-  //       let result = JSON.parse(atob(token.split(".")[1])).employees;
-  //       let sortTeamList = result.sort((a, b) =>
-  //         a.firstName.localeCompare(b.firstName)
-  //       );
-  //       setTeamList(sortTeamList);
-  //     })
-  //   );
-  // }, []);
+  useEffect(() => {
+    fetch("/api/employees").then((res) =>
+      res.json().then((token) => {
+        let result = JSON.parse(atob(token.split(".")[1])).employees;
+        let empList = result.sort((a, b) =>
+          a.firstName.localeCompare(b.firstName)
+        );
+        setEmployeeList(empList);
+        console.log(empList);
+      })
+    );
+  }, []);
 
   return (
     <div className="teams-page-wrapper">
@@ -30,7 +32,7 @@ export default function TeamsPage() {
             createLink={"/teams/create"}
           />
         </Grid>
-        <Teams teamList={teamList} />
+        <Teams teamList={teamList} employeeList={employeeList} />
       </Grid>
     </div>
   );

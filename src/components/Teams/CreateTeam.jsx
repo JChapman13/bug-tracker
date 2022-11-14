@@ -11,11 +11,16 @@ import {
   InputLabel,
   Select,
   Autocomplete,
+  ListItem,
+  List,
 } from "@mui/material";
 
 function CreateTeamPage(props) {
   const [checked, setChecked] = useState(false);
-  const [teamList, setTeamList] = useState();
+  const [addedEmployees, setAddedEmployees] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [leaderInputValue, setLeaderInputValue] = useState("");
+  const [leader, setLeader] = useState("");
 
   useEffect(() => {
     setChecked(true);
@@ -31,8 +36,13 @@ function CreateTeamPage(props) {
     }
   };
 
-  const handleAutocomplete = (event, value) => {
-    console.log(event);
+  const handleDelete = (name) => {
+    if (leader === name) {
+      setLeader("");
+    } else {
+      let removal = addedEmployees.filter((e) => e !== name);
+      setAddedEmployees(removal);
+    }
   };
 
   return (
@@ -83,13 +93,31 @@ function CreateTeamPage(props) {
                   <InputLabel id="demo-simple-select-label">
                     Add Employees
                   </InputLabel>
-                  {/* <Autocomplete
-                    freeSolo
+                  <Autocomplete
+                    clearOnEscape
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        setInputValue("");
+                      }
+                    }}
+                    onChange={(event, newValue) => {
+                      if (
+                        (newValue !== null) | "" &&
+                        !addedEmployees.includes(newValue) &&
+                        !leader.includes(newValue)
+                      ) {
+                        setAddedEmployees([...addedEmployees, newValue]);
+                        setInputValue("");
+                      }
+                    }}
+                    inputValue={inputValue}
+                    onInputChange={(event, newInputValue) => {
+                      setInputValue(newInputValue);
+                    }}
                     sx={{ width: { xs: 200, md: 300 } }}
-                    // options={employeeList.map(
-                    //   (e) => e.firstName + " " + e.lastName
-                    // )}
-                    onChange={handleAutocomplete}
+                    options={props.employeeList.map(
+                      (e) => `${e.firstName} ${e.lastName} - ${e.role}`
+                    )}
                     renderInput={(params) => (
                       <TextField
                         id="searchfield"
@@ -97,19 +125,62 @@ function CreateTeamPage(props) {
                         placeholder="Enter employee name..."
                       />
                     )}
-                  /> */}
+                  />
                 </Grid>
                 <Grid item xs={6}>
                   <InputLabel id="demo-simple-select-label">
                     Add Team Leader
                   </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="simple-select"
-                    label="Role"
-                    sx={{ width: "100%" }}
-                    onChange={handleChange}
+                  <Autocomplete
+                    clearOnEscape
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        setLeaderInputValue("");
+                      }
+                    }}
+                    onChange={(event, newValue) => {
+                      if (
+                        (newValue !== null) | "" &&
+                        !addedEmployees.includes(newValue)
+                      ) {
+                        setLeader(newValue);
+                        setLeaderInputValue("");
+                      }
+                    }}
+                    inputValue={leaderInputValue}
+                    onInputChange={(event, newInputValue) => {
+                      setLeaderInputValue(newInputValue);
+                    }}
+                    sx={{ width: { xs: 200, md: 300 } }}
+                    options={props.employeeList.map(
+                      (e) => `${e.firstName} ${e.lastName} - ${e.role}`
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        id="searchfield"
+                        {...params}
+                        placeholder="Enter employee name..."
+                      />
+                    )}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <List>
+                    <ListItem>{leader}</ListItem>
+                    {leader ? (
+                      <Button onClick={() => handleDelete(leader)}>X</Button>
+                    ) : (
+                      <></>
+                    )}
+                    {addedEmployees.map((name) => {
+                      return (
+                        <>
+                          <ListItem>{name}</ListItem>
+                          <Button onClick={() => handleDelete(name)}>X</Button>
+                        </>
+                      );
+                    })}
+                  </List>
                 </Grid>
               </Grid>
               <Button
@@ -119,7 +190,7 @@ function CreateTeamPage(props) {
                 sx={{ mt: 3, mb: 2 }}
                 onClick={handleSubmit}
               >
-                Add Employee
+                Create Team
               </Button>
             </Paper>
           </Grid>
