@@ -1,19 +1,7 @@
-.teams-page-wrapper {
-  margin-left: 10rem;
-  margin-right: 2.5rem;
-}
-
-.create-team-page-wrapper {
-  margin-left: 10rem;
-  margin-right: 2.5rem;
-}
-
 .top-banner {
-  margin-left: 16rem;
-  height: 6vh;
-  box-shadow: none;
+  margin: 1.5rem 0 0 18rem;
 }
 
 .top-banner-links {
-  margin-left: 16rem;
+  margin-left: 18rem;
 }

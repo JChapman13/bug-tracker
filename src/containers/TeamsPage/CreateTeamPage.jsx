@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import TopBar from "../../components/TopBar/TopBar.jsx";
 import CreateTeam from "../../components/Teams/CreateTeam";
 

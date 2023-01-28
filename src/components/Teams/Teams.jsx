@@ -3,7 +3,6 @@ import {
   Paper,
   Grid,
   Grow,
-  Button,
   InputBase,
   Table,
   TableContainer,
@@ -17,14 +16,32 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
+import "./Teams.css";
+import axios from "axios";
 
-function Teams() {
+function Teams({ teamList, employeeList }) {
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     setChecked(true);
   }, []);
+
+  // const searchTeams = async (event) => {
+  //   try {
+  //     fetch("/api/teams").then((res) =>
+  //       res.json().then((token) => {
+  //         let result = JSON.parse(atob(token.split(".")[1])).teams;
+  //         let newTeamList = result.sort((a, b) =>
+  //           a.firstName.localeCompare(b.firstName)
+  //         );
+  //         setTeamList(newTeamList);
+  //       })
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleEdit = (emp) => {
     console.log(emp);
@@ -54,7 +71,6 @@ function Teams() {
           </TableCell>
           <TableCell align="left">{info.emp.role}</TableCell>
           <TableCell align="left">{info.emp.team}</TableCell>
-          <TableCell align="left">{info.emp.email}</TableCell>
           <TableCell>
             <IconButton
               aria-label="expand row"
@@ -84,14 +100,7 @@ function Teams() {
         <Grid container spacing={2} direction="column">
           <Grow in={checked} {...(checked ? { timeout: 1000 } : {})}>
             <Grid item xs={12}>
-              <Paper
-                elevation={3}
-                sx={{
-                  margin: "auto",
-                  marginTop: "15vh",
-                  width: "100%",
-                }}
-              >
+              <Paper elevation={3}>
                 <Paper
                   elevation={1}
                   sx={{
@@ -120,15 +129,14 @@ function Teams() {
                   <Table aria-label="collapsible table">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="left">Name</TableCell>
-                        <TableCell align="left">Role</TableCell>
-                        <TableCell align="left">Team</TableCell>
-                        <TableCell align="left">Email</TableCell>
+                        <TableCell align="left">Team Name</TableCell>
+                        <TableCell align="left">Team Lead</TableCell>
+                        <TableCell align="left">Department</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {/* {employeeList.map((emp, idx) => (
-                        <Row key={emp._id} emp={emp} />
+                      {/* {teamList.map((teamInfo, idx) => (
+                        <Row key={teamInfo._id} teamInfo={teamInfo} />
                       ))} */}
                     </TableBody>
                   </Table>

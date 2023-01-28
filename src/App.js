@@ -6,6 +6,7 @@ import ProfilePage from "./containers/ProfilePage/ProfilePage";
 import TeamsPage from "./containers/TeamsPage/TeamsPage";
 import EmployeesPage from "./containers/EmployeesPage/EmployeesPage";
 import CreateTeamPage from "./containers/TeamsPage/CreateTeamPage";
+import CreateEmployeePage from "./containers/EmployeesPage/CreateEmployeePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -62,6 +63,10 @@ function App() {
               <Route path="/teams" element={<TeamsPage />} />
               <Route path="/teams/create" element={<CreateTeamPage />} />
               <Route path="/employees" element={<EmployeesPage />} />
+              <Route
+                path="/employees/create"
+                element={<CreateEmployeePage />}
+              />
             </Routes>
           </>
         )}

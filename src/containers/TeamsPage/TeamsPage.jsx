@@ -18,6 +18,12 @@ export default function TeamsPage() {
         console.log(empList);
       })
     );
+    fetch("/api/teams").then((res) => {
+      res.json().then((token) => {
+        let result = JSON.parse(atob(token.split(".")[1])).teams;
+        console.log(result, "this is the team result");
+      });
+    });
   }, []);
 
   return (

@@ -54,7 +54,7 @@ function CreateEmployee() {
 
       if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
 
-      navigate("/directory");
+      navigate("/employees");
     } catch (err) {
       console.log(err);
     }
@@ -62,33 +62,28 @@ function CreateEmployee() {
 
   return (
     <div>
-      <AppBar sx={{ boxShadow: "none" }}>
-        <Toolbar className="teams-banner">
-          <Typography variant="h3">Add Employee</Typography>
-        </Toolbar>
-        <Toolbar className="teams-menu-banner"></Toolbar>
-      </AppBar>
       <Grid container spacing={2} direction="column">
         <Grow in={checked} {...(checked ? { timeout: 1000 } : {})}>
           <Grid item xs={10} md={5}>
             <Paper
               elevation={3}
               sx={{
-                height: "75vh",
+                height: "50%",
                 width: "50rem",
                 margin: "auto",
                 marginTop: "15vh",
+                padding: "2rem",
               }}
             >
-              <Paper
-                elevation={1}
+              <Typography
                 sx={{
-                  backgroundColor: "#d1d9ff",
-                  height: "5vh",
+                  textAlign: "center",
+                  marginBottom: "2rem",
+                  fontSize: "2rem",
                 }}
               >
-                Add New Employee
-              </Paper>
+                Employee Information
+              </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <InputLabel id="demo-simple-select-label">

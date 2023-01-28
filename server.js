@@ -6,8 +6,8 @@ dotenv.config();
 const employeesRoute = require("./routes/employees");
 const ticketsRoute = require("./routes/tickets");
 const projectsRoute = require("./routes/projects");
-const directoryRoute = require("./routes/directory");
 const dashboardRoute = require("./routes/dashboard");
+const teamsRoute = require("./routes/teams");
 require("./config/database");
 
 const app = express();
@@ -19,14 +19,14 @@ app.use(express.static(path.join(__dirname, "build")));
 /*----------Unprotected routes here ----*/
 
 app.use("/api", employeesRoute);
-app.use(require("./config/auth"));
 
 app.use("/api", dashboardRoute);
 app.use("/api", projectsRoute);
 app.use("/api", ticketsRoute);
-app.use("/api", directoryRoute);
+app.use("/api", teamsRoute);
 /*---------- Protected Routes ----------*/
 
+app.use(require("./config/auth"));
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });

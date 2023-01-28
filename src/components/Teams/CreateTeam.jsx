@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Grid,
   AppBar,
@@ -9,7 +10,6 @@ import {
   Grow,
   TextField,
   InputLabel,
-  Select,
   Autocomplete,
   ListItem,
   List,
@@ -21,16 +21,57 @@ function CreateTeamPage(props) {
   const [inputValue, setInputValue] = useState("");
   const [leaderInputValue, setLeaderInputValue] = useState("");
   const [leader, setLeader] = useState("");
+  const [teamName, setTeamName] = useState("");
+  let navigate = useNavigate();
 
   useEffect(() => {
     setChecked(true);
   }, []);
 
-  const handleChange = (event) => {};
+  const handleChange = (event) => {
+    setTeamName(event.target.value);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      const emailRegex = /-\s([^\s]+)\s\(/;
+      const empIds = [];
+      let leaderId = "";
+
+      props.employeeList.map((e) => {
+        const leaderEmail = leader.split(emailRegex);
+        console.log(leaderEmail);
+        if (e.email === leaderEmail[1]) {
+          leaderId = e._id;
+        }
+      });
+
+      addedEmployees.forEach((e) => {
+        const emailCheck = e.split(emailRegex);
+
+        props.employeeList.map((e) => {
+          if (e.email === emailCheck[1]) {
+            empIds.push(e._id);
+          }
+        });
+      });
+      console.log(teamName);
+      console.log(leaderId);
+      console.log(empIds);
+      const fetchResponse = await fetch("/api/create-team", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          teamName: teamName,
+          leader: leaderId,
+          employees: empIds,
+        }),
+      });
+
+      if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+
+      navigate("/teams");
     } catch (err) {
       console.log(err);
     }
@@ -47,45 +88,38 @@ function CreateTeamPage(props) {
 
   return (
     <div>
-      <AppBar sx={{ boxShadow: "none" }}>
-        <Toolbar className="teams-banner">
-          <Typography variant="h3">Add Team</Typography>
-        </Toolbar>
-        <Toolbar className="teams-menu-banner"></Toolbar>
-      </AppBar>
       <Grid container spacing={2} direction="column">
         <Grow in={checked} {...(checked ? { timeout: 1000 } : {})}>
           <Grid item xs={10} md={5}>
             <Paper
               elevation={3}
               sx={{
-                height: "75vh",
-                width: "50rem",
-                margin: "auto",
-                marginTop: "15vh",
+                height: "50%",
+                margin: "15vh 4rem 0 20rem",
+                padding: "2rem",
               }}
             >
-              <Paper
-                elevation={1}
+              <Typography
                 sx={{
-                  backgroundColor: "#d1d9ff",
-                  height: "5vh",
+                  textAlign: "center",
+                  marginBottom: "2rem",
+                  fontSize: "2rem",
                 }}
               >
-                Add Team
-              </Paper>
+                Team Information
+              </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <InputLabel id="demo-simple-select-label">
                     Team Name
                   </InputLabel>
                   <TextField
-                    autoComplete="given-name"
-                    name="firstName"
+                    name="teamName"
                     required
                     fullWidth
-                    id="firstName"
+                    id="teamName"
                     autoFocus
+                    value={teamName}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -116,7 +150,8 @@ function CreateTeamPage(props) {
                     }}
                     sx={{ width: { xs: 200, md: 300 } }}
                     options={props.employeeList.map(
-                      (e) => `${e.firstName} ${e.lastName} - ${e.role}`
+                      (e) =>
+                        `${e.firstName} ${e.lastName}\n - ${e.email} (${e.role}))`
                     )}
                     renderInput={(params) => (
                       <TextField
@@ -128,7 +163,7 @@ function CreateTeamPage(props) {
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <InputLabel id="demo-simple-select-label">
+                  <InputLabel id="add-team-leader-select-label">
                     Add Team Leader
                   </InputLabel>
                   <Autocomplete
@@ -151,9 +186,9 @@ function CreateTeamPage(props) {
                     onInputChange={(event, newInputValue) => {
                       setLeaderInputValue(newInputValue);
                     }}
-                    sx={{ width: { xs: 200, md: 300 } }}
                     options={props.employeeList.map(
-                      (e) => `${e.firstName} ${e.lastName} - ${e.role}`
+                      (e) =>
+                        `${e.firstName} ${e.lastName}\n - ${e.email} (${e.role}))`
                     )}
                     renderInput={(params) => (
                       <TextField
@@ -166,17 +201,33 @@ function CreateTeamPage(props) {
                 </Grid>
                 <Grid item xs={12}>
                   <List>
-                    <ListItem>{leader}</ListItem>
+                    <Typography sx={{ textDecoration: "underline" }}>
+                      Team Leader
+                    </Typography>
                     {leader ? (
-                      <Button onClick={() => handleDelete(leader)}>X</Button>
+                      <>
+                        <ListItem>
+                          {leader}{" "}
+                          <Button onClick={() => handleDelete(leader)}>
+                            X
+                          </Button>
+                        </ListItem>
+                      </>
                     ) : (
-                      <></>
+                      <br />
                     )}
+                    <Typography sx={{ textDecoration: "underline" }}>
+                      Team Roster
+                    </Typography>
                     {addedEmployees.map((name) => {
                       return (
                         <>
-                          <ListItem>{name}</ListItem>
-                          <Button onClick={() => handleDelete(name)}>X</Button>
+                          <ListItem>
+                            {name}{" "}
+                            <Button onClick={() => handleDelete(name)}>
+                              X
+                            </Button>
+                          </ListItem>
                         </>
                       );
                     })}

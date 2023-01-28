@@ -3,6 +3,7 @@ import { Grid } from "@mui/material";
 import TopBar from "../../components/TopBar/TopBar";
 import Employees from "../../components/Employees/Employees";
 import { useLocation } from "react-router-dom";
+import "./EmployeesPage.css";
 
 function EmployeesPage() {
   const [employeeList, setEmployeeList] = useState();
@@ -22,18 +23,6 @@ function EmployeesPage() {
     );
   }, [location]);
 
-  // useEffect(() => {
-  //   fetch("/api/teams").then((res) =>
-  //     res.json().then((token) => {
-  //       let result = JSON.parse(atob(token.split(".")[1])).employees;
-  //       let sortTeamList = result.sort((a, b) =>
-  //         a.firstName.localeCompare(b.firstName)
-  //       );
-  //       setTeamList(sortTeamList);
-  //     })
-  //   );
-  // }, [location]);
-
   if (!employeeList) {
     return (
       <>
@@ -42,13 +31,13 @@ function EmployeesPage() {
     );
   }
   return (
-    <div className="teams-page-wrapper">
+    <div className="employees-page-wrapper">
       <Grid container spacing={2} direction="column">
         <TopBar
           pageName="Employees"
-          mainLink={"/employees/create"}
+          mainLink={"/employees"}
           mainLinkName={"Employees"}
-          createLink={"/employees"}
+          createLink={"/employees/create"}
           createLinkName={"Add Employee"}
         />
         <Grid item xs={12} sm={6}>

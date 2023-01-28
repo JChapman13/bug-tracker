@@ -17,6 +17,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
+import "./Employees.css";
 
 function Employees({ employeeList }) {
   const [checked, setChecked] = useState(false);
@@ -80,16 +81,15 @@ function Employees({ employeeList }) {
   }
   return (
     <div>
-      <div className="teams-page-wrapper">
+      <div className="employees-wrapper">
         <Grid container spacing={2} direction="column">
           <Grow in={checked} {...(checked ? { timeout: 1000 } : {})}>
             <Grid item xs={12}>
               <Paper
                 elevation={3}
                 sx={{
-                  margin: "auto",
-                  marginTop: "15vh",
-                  width: "100%",
+                  margin: "10vh 0 0 2rem",
+                  width: "75%",
                 }}
               >
                 <Paper
@@ -115,18 +115,35 @@ function Employees({ employeeList }) {
                       padding: "1rem",
                     }}
                   />
-                  <Button variant="outlined" href="/create-employee">
-                    Add Employee
-                  </Button>
                 </Paper>
                 <TableContainer component={Paper}>
                   <Table aria-label="collapsible table">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="left">Name</TableCell>
-                        <TableCell align="left">Role</TableCell>
-                        <TableCell align="left">Team</TableCell>
-                        <TableCell align="left">Email</TableCell>
+                        <TableCell
+                          align="left"
+                          sx={{ textDecoration: "underline" }}
+                        >
+                          Name
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          sx={{ textDecoration: "underline" }}
+                        >
+                          Role
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          sx={{ textDecoration: "underline" }}
+                        >
+                          Team
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          sx={{ textDecoration: "underline" }}
+                        >
+                          Email
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>

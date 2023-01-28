@@ -2,9 +2,15 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Link } from "@mui/material";
 import "./TopBar.css";
 
-function TopBar({ pageName, createLinkName, mainLinkName }) {
+function TopBar({
+  pageName,
+  createLinkName,
+  mainLinkName,
+  mainLink,
+  createLink,
+}) {
   return (
-    <AppBar sx={{ boxShadow: "none" }}>
+    <AppBar className="top-bar-nav" sx={{ boxShadow: "none" }}>
       <Toolbar className="top-banner">
         <Typography variant="h3">{pageName}</Typography>
       </Toolbar>
@@ -15,7 +21,7 @@ function TopBar({ pageName, createLinkName, mainLinkName }) {
             textDecoration: "underline",
             marginLeft: ".5rem",
           }}
-          href={"/teams"}
+          href={mainLink}
         >
           {mainLinkName}
         </Link>
@@ -25,7 +31,7 @@ function TopBar({ pageName, createLinkName, mainLinkName }) {
             textDecoration: "underline",
             marginLeft: "1.5rem",
           }}
-          href={"/teams/create"}
+          href={createLink}
         >
           {createLinkName}
         </Link>
