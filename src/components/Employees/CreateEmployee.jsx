@@ -144,16 +144,6 @@ function CreateEmployee() {
                     </MenuItem>
                   </Select>
                 </Grid>
-                <Grid item xs={6}>
-                  <InputLabel id="demo-simple-select-label">Team</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="simple-select"
-                    label="Role"
-                    sx={{ width: "100%" }}
-                    onChange={handleChange}
-                  />
-                </Grid>
               </Grid>
               <Button
                 type="submit"

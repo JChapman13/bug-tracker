@@ -18,6 +18,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 function EditEmployeePage(props) {
   const [checked, setChecked] = useState(false);
   const [employeeInfo, setEmployeeInfo] = useState({
+    _id: " ",
     firstName: "",
     lastName: "",
     email: "",
@@ -39,13 +40,13 @@ function EditEmployeePage(props) {
     });
   };
 
-  const handleSubmit = async (event) => {
+  const handleEdit = async (e) => {
     try {
       const fetchResponse = await fetch("/api/edit-employee", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: employeeInfo._id,
+          _id: employeeInfo._id,
           firstName: employeeInfo.firstName,
           lastName: employeeInfo.lastName,
           email: employeeInfo.email,
@@ -55,13 +56,11 @@ function EditEmployeePage(props) {
       });
 
       if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
-
-      navigate("/directory");
+      navigate("/employees");
     } catch (err) {
       console.log(err);
     }
   };
-
   return (
     <div>
       <AppBar sx={{ boxShadow: "none" }}>
@@ -171,7 +170,7 @@ function EditEmployeePage(props) {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => handleSubmit()}
+                onClick={() => handleEdit()}
               >
                 Submit
               </Button>

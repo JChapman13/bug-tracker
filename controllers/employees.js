@@ -76,11 +76,11 @@ async function getEmployees(req, res) {
 async function editEmployee(req, res) {
   try {
     console.log("test");
-    const { id, firstName, lastName, email, role, team } = req.body;
-    console.log(id);
+    const { _id, firstName, lastName, email, role, team } = req.body;
+    console.log(req.body);
 
     await Employee.findByIdAndUpdate(
-      id,
+      _id,
       {
         firstName: firstName,
         lastName: lastName,

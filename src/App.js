@@ -7,6 +7,8 @@ import TeamsPage from "./containers/TeamsPage/TeamsPage";
 import EmployeesPage from "./containers/EmployeesPage/EmployeesPage";
 import CreateTeamPage from "./containers/TeamsPage/CreateTeamPage";
 import CreateEmployeePage from "./containers/EmployeesPage/CreateEmployeePage";
+import EditEmployeePage from "./containers/EmployeesPage/EditEmployeePage";
+import EditTeamPage from "./components/Teams/EditTeam";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -62,11 +64,13 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/teams" element={<TeamsPage />} />
               <Route path="/teams/create" element={<CreateTeamPage />} />
+              <Route path="/teams/edit" element={<EditTeamPage />} />
               <Route path="/employees" element={<EmployeesPage />} />
               <Route
                 path="/employees/create"
                 element={<CreateEmployeePage />}
               />
+              <Route path="/employees/edit" element={<EditEmployeePage />} />
             </Routes>
           </>
         )}

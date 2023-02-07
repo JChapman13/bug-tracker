@@ -11,6 +11,7 @@ import {
   TableRow,
   TableBody,
   IconButton,
+  Link,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
@@ -19,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import "./Teams.css";
 import axios from "axios";
 
-function Teams({ teamList, employeeList }) {
+function Teams({ teamList, employeeList, findTeams, setTeamList }) {
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
@@ -45,37 +46,56 @@ function Teams({ teamList, employeeList }) {
 
   const handleEdit = (emp) => {
     console.log(emp);
-    navigate("/edit-team", { state: emp });
+    navigate("/teams/edit", { state: emp });
   };
 
-  const handleDelete = async (emp) => {
+  const handleDelete = async (id) => {
     try {
       const fetchResponse = await fetch("/api/delete-team", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          _id: id,
+        }),
       });
 
       if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+      let teamsEdit = teamList;
+      teamsEdit.find((e, idx) => {
+        if (e._id === id) {
+          return teamsEdit.splice(idx, 1);
+        }
+      });
+      findTeams();
     } catch (err) {
       console.log(err);
     }
   };
 
-  function Row(info) {
+  const viewTeam = () => {};
+
+  if (!teamList) {
+    return <h1>Loading</h1>;
+  }
+  function Row(e) {
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
           <TableCell component="th" scope="row">
-            {info.emp.firstName + " " + info.emp.lastName}
+            <Link style={{ cursor: "pointer" }} onClick={() => viewTeam()}>
+              {e.teamInfo.name}
+            </Link>
           </TableCell>
-          <TableCell align="left">{info.emp.role}</TableCell>
-          <TableCell align="left">{info.emp.team}</TableCell>
+          <TableCell align="left">
+            {e.teamInfo.leader.firstName} {e.teamInfo.leader.lastName}
+          </TableCell>
+          <TableCell align="left">{e.teamInfo.projectsNum}</TableCell>
+          <TableCell align="left">{e.teamInfo.empsNum}</TableCell>
           <TableCell>
             <IconButton
               aria-label="expand row"
               size="small"
-              onClick={() => handleEdit(info.emp)}
+              onClick={() => handleEdit(e.teamInfo.emp)}
             >
               <EditIcon />
             </IconButton>
@@ -84,7 +104,7 @@ function Teams({ teamList, employeeList }) {
             <IconButton
               aria-label="expand row"
               size="small"
-              onClick={() => handleDelete(info.emp)}
+              onClick={() => handleDelete(e.teamInfo._id)}
             >
               <DeleteIcon />
             </IconButton>
@@ -131,13 +151,14 @@ function Teams({ teamList, employeeList }) {
                       <TableRow>
                         <TableCell align="left">Team Name</TableCell>
                         <TableCell align="left">Team Lead</TableCell>
-                        <TableCell align="left">Department</TableCell>
+                        <TableCell align="left"># of Projects</TableCell>
+                        <TableCell align="left"># of Employees</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {/* {teamList.map((teamInfo, idx) => (
+                      {teamList.map((teamInfo, idx) => (
                         <Row key={teamInfo._id} teamInfo={teamInfo} />
-                      ))} */}
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>

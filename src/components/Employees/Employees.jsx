@@ -22,13 +22,12 @@ import "./Employees.css";
 function Employees({ employeeList }) {
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
-  console.log(employeeList);
   useEffect(() => {
     setChecked(true);
   }, []);
 
   const handleEdit = (emp) => {
-    navigate("/edit-employee", { state: emp });
+    navigate("/employees/edit", { state: emp });
   };
 
   const handleDelete = async (emp) => {
@@ -42,6 +41,8 @@ function Employees({ employeeList }) {
       });
 
       if (!fetchResponse.ok) throw new Error("Fetch failed - Bad request");
+
+      navigate("/teams");
     } catch (err) {
       console.log(err);
     }
