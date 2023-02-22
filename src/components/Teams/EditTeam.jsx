@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Grid,
   AppBar,
@@ -15,23 +15,29 @@ import {
   List,
 } from "@mui/material";
 
-function EditTeamPage(props) {
+function EditTeam() {
   const [checked, setChecked] = useState(false);
   const [addedEmployees, setAddedEmployees] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [leaderInputValue, setLeaderInputValue] = useState("");
-  const [leader, setLeader] = useState("");
-  const [teamName, setTeamName] = useState("");
   const [employeeList, setEmployeeList] = useState([]);
+  const [teamInfo, setTeamInfo] = useState({
+    name: "",
+    users: [],
+    leader: "",
+  });
   let navigate = useNavigate();
+  const location = useLocation();
   let employeeTeamList = [];
 
   useEffect(() => {
     setChecked(true);
-    findEmployees();
+    setTeamInfo(location.state);
+    setAddedEmployees(location.state.users);
+    getEmployees();
   }, []);
 
-  const findEmployees = async (e) => {
+  const getEmployees = async (e) => {
     fetch("/api/employees").then((res) =>
       res.json().then((token) => {
         let result = JSON.parse(atob(token.split(".")[1])).employees;
@@ -45,7 +51,7 @@ function EditTeamPage(props) {
   };
 
   const handleChange = (event) => {
-    setTeamName(event.target.value);
+    setTeamInfo(event.target.value);
   };
 
   const handleSubmit = async (event) => {
@@ -55,9 +61,8 @@ function EditTeamPage(props) {
       const empIds = [];
       let leaderId = "";
 
-      props.employeeList.map((e) => {
-        const leaderEmail = leader.split(emailRegex);
-        console.log(leaderEmail);
+      teamInfo.users.map((e) => {
+        const leaderEmail = teamInfo.leader.email.split(emailRegex);
         if (e.email === leaderEmail[1]) {
           leaderId = e._id;
         }
@@ -66,20 +71,17 @@ function EditTeamPage(props) {
       addedEmployees.forEach((e) => {
         const emailCheck = e.split(emailRegex);
 
-        props.employeeList.map((e) => {
+        teamInfo.users.map((e) => {
           if (e.email === emailCheck[1]) {
             empIds.push(e._id);
           }
         });
       });
-      console.log(teamName);
-      console.log(leaderId);
-      console.log(empIds);
       const fetchResponse = await fetch("/api/create-team", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          teamName: teamName,
+          teamName: teamInfo.name,
           leader: leaderId,
           employees: empIds,
         }),
@@ -93,15 +95,61 @@ function EditTeamPage(props) {
     }
   };
 
-  const handleDelete = (name) => {
-    if (leader === name) {
-      setLeader("");
+  const handleDelete = (id) => {
+    if (teamInfo.leader._id === id) {
+      const { leader, ...rest } = teamInfo;
+      setTeamInfo(rest);
     } else {
-      let removal = addedEmployees.filter((e) => e !== name);
-      setAddedEmployees(removal);
+      const removal = teamInfo.users.filter((e) => e._id !== id);
+      setTeamInfo({ ...teamInfo, users: removal });
     }
   };
-  if (!employeeList) {
+
+  const handleLeaderChange = (e) => {
+    const emailResult = emailCheck(e);
+    employeeList.forEach((emp) => {
+      if (emp.email === emailResult) {
+        setTeamInfo({ ...teamInfo, leader: emp });
+      }
+    });
+  };
+
+  const checkLeader = (e) => {
+    const emailResult = emailCheck(e);
+    if (teamInfo.leader && teamInfo.leader.email === emailResult) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const checkUsers = (e) => {
+    const emailResult = emailCheck(e);
+    if (
+      teamInfo.users &&
+      teamInfo.users.some((user) => user.email === emailResult)
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const emailCheck = (email) => {
+    const emailRegex = /-\s([^\s]+)\s\(/;
+    const emailCheck = email.split(emailRegex);
+    return emailCheck[1];
+  };
+
+  const handleUserChange = (e) => {
+    const emailResult = emailCheck(e);
+    employeeList.forEach((emp) => {
+      if (emp.email === emailResult) {
+        setTeamInfo({ ...teamInfo, users: [...teamInfo.users, emp] });
+      }
+    });
+  };
+  if (!teamInfo && !employeeList) {
     return <h1>Loading</h1>;
   }
   return (
@@ -137,7 +185,7 @@ function EditTeamPage(props) {
                     fullWidth
                     id="teamName"
                     autoFocus
-                    value={teamName}
+                    value={teamInfo.name}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -154,11 +202,11 @@ function EditTeamPage(props) {
                     }}
                     onChange={(event, newValue) => {
                       if (
-                        (newValue !== null) | "" &&
-                        !addedEmployees.includes(newValue) &&
-                        !leader.includes(newValue)
+                        (newValue !== null || newValue !== "") &&
+                        checkUsers(newValue) &&
+                        checkLeader(newValue)
                       ) {
-                        setAddedEmployees([...addedEmployees, newValue]);
+                        handleUserChange(newValue);
                         setInputValue("");
                       }
                     }}
@@ -167,9 +215,10 @@ function EditTeamPage(props) {
                       setInputValue(newInputValue);
                     }}
                     sx={{ width: { xs: 200, md: 300 } }}
-                    options={props.employeeList.map(
+                    options={employeeList.map(
                       (e) =>
-                        `${e.firstName} ${e.lastName}\n - ${e.email} (${e.role}))`
+                        `${e.firstName} ${e.lastName}\n - ${e.email} (${e.role}
+                        )`
                     )}
                     renderInput={(params) => (
                       <TextField
@@ -193,10 +242,11 @@ function EditTeamPage(props) {
                     }}
                     onChange={(event, newValue) => {
                       if (
-                        (newValue !== null) | "" &&
-                        !addedEmployees.includes(newValue)
+                        (newValue !== null || newValue !== "") &&
+                        checkUsers(newValue) &&
+                        checkLeader(newValue)
                       ) {
-                        setLeader(newValue);
+                        handleLeaderChange(newValue);
                         setLeaderInputValue("");
                       }
                     }}
@@ -204,9 +254,9 @@ function EditTeamPage(props) {
                     onInputChange={(event, newInputValue) => {
                       setLeaderInputValue(newInputValue);
                     }}
-                    options={props.employeeList.map(
+                    options={employeeList.map(
                       (e) =>
-                        `${e.firstName} ${e.lastName}\n - ${e.email} (${e.role}))`
+                        `${e.firstName} ${e.lastName}\n - ${e.email} (${e.role})`
                     )}
                     renderInput={(params) => (
                       <TextField
@@ -222,11 +272,14 @@ function EditTeamPage(props) {
                     <Typography sx={{ textDecoration: "underline" }}>
                       Team Leader
                     </Typography>
-                    {leader ? (
+                    {teamInfo.leader ? (
                       <>
                         <ListItem>
-                          {leader}{" "}
-                          <Button onClick={() => handleDelete(leader)}>
+                          {teamInfo.leader.firstName} {teamInfo.leader.lastName}{" "}
+                          - {teamInfo.leader.email}
+                          <Button
+                            onClick={() => handleDelete(teamInfo.leader._id)}
+                          >
                             X
                           </Button>
                         </ListItem>
@@ -237,12 +290,12 @@ function EditTeamPage(props) {
                     <Typography sx={{ textDecoration: "underline" }}>
                       Team Roster
                     </Typography>
-                    {addedEmployees.map((name) => {
+                    {teamInfo.users.map((emp) => {
                       return (
                         <>
                           <ListItem>
-                            {name}{" "}
-                            <Button onClick={() => handleDelete(name)}>
+                            {emp.firstName} {emp.lastName} - {emp.email}
+                            <Button onClick={() => handleDelete(emp._id)}>
                               X
                             </Button>
                           </ListItem>
@@ -269,4 +322,4 @@ function EditTeamPage(props) {
   );
 }
 
-export default EditTeamPage;
+export default EditTeam;

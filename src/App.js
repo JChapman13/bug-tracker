@@ -8,7 +8,7 @@ import EmployeesPage from "./containers/EmployeesPage/EmployeesPage";
 import CreateTeamPage from "./containers/TeamsPage/CreateTeamPage";
 import CreateEmployeePage from "./containers/EmployeesPage/CreateEmployeePage";
 import EditEmployeePage from "./containers/EmployeesPage/EditEmployeePage";
-import EditTeamPage from "./components/Teams/EditTeam";
+import EditTeamPage from "./containers/TeamsPage/EditTeamsPage.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {

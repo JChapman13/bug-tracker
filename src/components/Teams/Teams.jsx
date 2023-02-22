@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import "./Teams.css";
 import axios from "axios";
 
-function Teams({ teamList, employeeList, findTeams, setTeamList }) {
+function Teams({ teamList, employeeList, getTeams, setTeamList }) {
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
 
@@ -28,24 +28,7 @@ function Teams({ teamList, employeeList, findTeams, setTeamList }) {
     setChecked(true);
   }, []);
 
-  // const searchTeams = async (event) => {
-  //   try {
-  //     fetch("/api/teams").then((res) =>
-  //       res.json().then((token) => {
-  //         let result = JSON.parse(atob(token.split(".")[1])).teams;
-  //         let newTeamList = result.sort((a, b) =>
-  //           a.firstName.localeCompare(b.firstName)
-  //         );
-  //         setTeamList(newTeamList);
-  //       })
-  //     );
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const handleEdit = (emp) => {
-    console.log(emp);
     navigate("/teams/edit", { state: emp });
   };
 
@@ -66,7 +49,7 @@ function Teams({ teamList, employeeList, findTeams, setTeamList }) {
           return teamsEdit.splice(idx, 1);
         }
       });
-      findTeams();
+      getTeams();
     } catch (err) {
       console.log(err);
     }
@@ -95,7 +78,7 @@ function Teams({ teamList, employeeList, findTeams, setTeamList }) {
             <IconButton
               aria-label="expand row"
               size="small"
-              onClick={() => handleEdit(e.teamInfo.emp)}
+              onClick={() => handleEdit(e.teamInfo)}
             >
               <EditIcon />
             </IconButton>

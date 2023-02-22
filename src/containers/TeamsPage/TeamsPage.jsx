@@ -6,47 +6,56 @@ import Teams from "../../components/Teams/Teams";
 export default function TeamsPage() {
   const [teamList, setTeamList] = useState([]);
   const [employeeList, setEmployeeList] = useState();
-  let employeeTeamList = [];
 
   useEffect(() => {
-    findEmployees();
+    getEmployees();
   }, []);
 
-  const findEmployees = async (e) => {
+  const getEmployees = async (e) => {
     fetch("/api/employees").then((res) =>
       res.json().then((token) => {
+        let employeeTeamList = [];
         let result = JSON.parse(atob(token.split(".")[1])).employees;
         let empList = result.sort((a, b) =>
           a.firstName.localeCompare(b.firstName)
         );
         employeeTeamList = empList;
         setEmployeeList(empList);
-        findTeams();
+        getTeams(employeeTeamList);
       })
     );
   };
 
-  const findTeams = async (e) => {
+  const getTeams = async (empList) => {
     fetch("/api/teams").then((res) => {
       res.json().then((token) => {
         let result = JSON.parse(atob(token.split(".")[1])).teams;
         const teamResult = [];
-        result.map((e) => {
+        result.forEach((e) => {
           let projectsNum = 0;
           let empsNum = 0;
+          let teamEmps = [];
           if (e.projects) {
             projectsNum = e.projects.length;
           }
           if (e.users) {
             empsNum = e.users.length;
           }
-          const leader = employeeTeamList.find((emp) => emp._id === e.leader);
+          e.users.forEach((employee) => {
+            empList.forEach((e) => {
+              if (e._id === employee) {
+                teamEmps.push(e);
+              }
+            });
+          });
+          const leader = empList.find((emp) => emp._id === e.leader);
           teamResult.push({
             _id: e._id,
             name: e.name,
             leader: leader,
             projectsNum: projectsNum,
             empsNum: empsNum,
+            users: teamEmps,
           });
         });
         setTeamList(teamResult);
@@ -73,7 +82,7 @@ export default function TeamsPage() {
           teamList={teamList}
           employeeList={employeeList}
           setTeamList={setTeamList}
-          findTeams={findTeams}
+          getTeams={getTeams}
         />
       </Grid>
     </div>
