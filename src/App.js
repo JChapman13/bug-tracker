@@ -4,11 +4,13 @@ import Dashboard from "./containers/Dashboard/Dashboard";
 import AuthPage from "./containers/AuthPage/AuthPage";
 import ProfilePage from "./containers/ProfilePage/ProfilePage";
 import TeamsPage from "./containers/TeamsPage/TeamsPage";
+import TicketPage from "./containers/TicketsPage/TicketPage";
 import EmployeesPage from "./containers/EmployeesPage/EmployeesPage";
 import CreateTeamPage from "./containers/TeamsPage/CreateTeamPage";
 import CreateEmployeePage from "./containers/EmployeesPage/CreateEmployeePage";
 import EditEmployeePage from "./containers/EmployeesPage/EditEmployeePage";
 import EditTeamPage from "./containers/TeamsPage/EditTeamsPage.jsx";
+import CreateTicketPage from "./containers/TicketsPage/CreateTicketPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -70,6 +72,8 @@ function App() {
                 path="/employees/create"
                 element={<CreateEmployeePage />}
               />
+              <Route path="/tickets" element={<TicketPage />} />
+              <Route path="/tickets/create" element={<CreateTicketPage />} />
               <Route path="/employees/edit" element={<EditEmployeePage />} />
             </Routes>
           </>

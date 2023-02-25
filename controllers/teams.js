@@ -37,7 +37,6 @@ async function getTeam(req, res) {
 }
 
 async function deleteTeam(req, res) {
-  console.log(req.body);
   try {
     const id = req.body._id;
 
@@ -49,12 +48,32 @@ async function deleteTeam(req, res) {
       }
     }).clone();
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 }
+
+async function editTeam(req, res) {
+  try {
+    const { _id, name, leader, users } = req.body;
+
+    const updatedTeam = await Team.findByIdAndUpdate(
+      _id,
+      {
+        name: name,
+        leader: leader,
+        users: users,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedTeam);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
 module.exports = {
   createTeam,
   getTeam,
   deleteTeam,
+  editTeam,
 };

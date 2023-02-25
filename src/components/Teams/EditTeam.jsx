@@ -50,40 +50,21 @@ function EditTeam() {
     );
   };
 
-  const handleChange = (event) => {
-    setTeamInfo(event.target.value);
+  const handleNameChange = (event) => {
+    setTeamInfo({ ...teamInfo, name: event.target.value });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const emailRegex = /-\s([^\s]+)\s\(/;
-      const empIds = [];
-      let leaderId = "";
-
-      teamInfo.users.map((e) => {
-        const leaderEmail = teamInfo.leader.email.split(emailRegex);
-        if (e.email === leaderEmail[1]) {
-          leaderId = e._id;
-        }
-      });
-
-      addedEmployees.forEach((e) => {
-        const emailCheck = e.split(emailRegex);
-
-        teamInfo.users.map((e) => {
-          if (e.email === emailCheck[1]) {
-            empIds.push(e._id);
-          }
-        });
-      });
-      const fetchResponse = await fetch("/api/create-team", {
-        method: "POST",
+      const fetchResponse = await fetch("/api/edit-team", {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          teamName: teamInfo.name,
-          leader: leaderId,
-          employees: empIds,
+          _id: teamInfo._id,
+          name: teamInfo.name,
+          leader: teamInfo.leader,
+          users: teamInfo.users,
         }),
       });
 
@@ -186,7 +167,7 @@ function EditTeam() {
                     id="teamName"
                     autoFocus
                     value={teamInfo.name}
-                    onChange={handleChange}
+                    onChange={handleNameChange}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -312,7 +293,7 @@ function EditTeam() {
                 sx={{ mt: 3, mb: 2 }}
                 onClick={handleSubmit}
               >
-                Create Team
+                Submit
               </Button>
             </Paper>
           </Grid>
