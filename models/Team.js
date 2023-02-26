@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 
 const ProjectSchema = new Schema(
   {
-    name: String,
-    created: String,
+    name: { type: String, required: true },
     tickets: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     users: [{ type: Schema.Types.ObjectId, ref: "User" }],

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
@@ -7,62 +7,90 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import { Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const priorities = ["Low", "Medium", "High"];
 const types = ["Bug", "Feature Request", "Improvement", "Task"];
 const statuses = ["Open", "In Progress", "Resolved", "Closed"];
 
 function CreateTicket({ onSubmit }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [assignee, setAssignee] = useState(null);
-  const [reporter, setReporter] = useState("");
-  const [priority, setPriority] = useState("");
-  const [type, setType] = useState("");
-  const [status, setStatus] = useState("");
-  const [labels, setLabels] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [comments, setComments] = useState("");
-  const [attachments, setAttachments] = useState([]);
+  const [values, setValues] = useState({
+    title: "",
+    description: "",
+    assignee: null,
+    reporter: "",
+    priority: "",
+    type: "",
+    status: "",
+    dueDate: "",
+    comments: "",
+    attachments: [],
+  });
+  const [employeeList, setEmployeeList] = useState("");
+  let navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onSubmit({
-      title,
-      description,
-      assignee,
-      reporter,
-      priority,
-      type,
-      status,
-      labels,
-      dueDate,
-      comments,
-      attachments,
+  useEffect(() => {
+    getEmployees();
+  }, []);
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    let value = event.target.value;
+
+    if (name === "attachments") {
+      value = Array.from(event.target.files);
+    }
+
+    setValues({
+      ...values,
+      [name]: value,
     });
-    setTitle("");
-    setDescription("");
-    setAssignee(null);
-    setReporter("");
-    setPriority("");
-    setType("");
-    setStatus("");
-    setLabels("");
-    setDueDate("");
-    setComments("");
-    setAttachments([]);
   };
 
+  const getEmployees = async (e) => {
+    fetch("/api/employees").then((res) =>
+      res.json().then((token) => {
+        let employeeTeamList = [];
+        let result = JSON.parse(atob(token.split(".")[1])).employees;
+        let empList = result.sort((a, b) =>
+          a.firstName.localeCompare(b.firstName)
+        );
+        employeeTeamList = empList;
+        setEmployeeList(empList);
+      })
+    );
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("/api/tickets-create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      navigate("/tickets");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (!employeeList) {
+    <h1>Loading</h1>;
+  }
   return (
     <div className="ticket-page-wrapper">
-      <Paper>
+      <Paper sx={{ padding: "2rem" }}>
         <TextField
           label="Title/Summary"
           variant="outlined"
           fullWidth
           required
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          name="title"
+          value={values.title}
+          onChange={handleChange}
         />
         <br />
         <br />
@@ -73,17 +101,18 @@ function CreateTicket({ onSubmit }) {
           required
           multiline
           rows={4}
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
+          name="description"
+          value={values.description}
+          onChange={handleChange}
         />
         <br />
         <br />
         <Autocomplete
           options={["John", "Mary", "Tom"]}
-          value={assignee}
-          onChange={(event, newValue) => {
-            setAssignee(newValue);
-          }}
+          value={values.assignee}
+          onChange={(event, newValue) =>
+            setValues({ ...values, assignee: newValue })
+          }
           renderInput={(params) => (
             <TextField {...params} label="Assignee" variant="outlined" />
           )}
@@ -95,8 +124,9 @@ function CreateTicket({ onSubmit }) {
           variant="outlined"
           fullWidth
           required
-          value={reporter}
-          onChange={(event) => setReporter(event.target.value)}
+          name="reporter"
+          value={values.reporter}
+          onChange={handleChange}
         />
         <br />
         <br />
@@ -104,8 +134,9 @@ function CreateTicket({ onSubmit }) {
           <InputLabel id="priority-label">Priority</InputLabel>
           <Select
             labelId="priority-label"
-            value={priority}
-            onChange={(event) => setPriority(event.target.value)}
+            value={values.priority}
+            onChange={handleChange}
+            name="priority"
             label="Priority"
           >
             {priorities.map((priority) => (
@@ -121,8 +152,9 @@ function CreateTicket({ onSubmit }) {
           <InputLabel id="type-label">Type</InputLabel>
           <Select
             labelId="type-label"
-            value={type}
-            onChange={(event) => setType(event.target.value)}
+            value={values.type}
+            onChange={handleChange}
+            name="type"
             label="Type"
           >
             {types.map((type) => (
@@ -138,8 +170,9 @@ function CreateTicket({ onSubmit }) {
           <InputLabel id="status-label">Status</InputLabel>
           <Select
             labelId="status-label"
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
+            name="status"
+            value={values.status}
+            onChange={handleChange}
             label="Status"
           >
             {statuses.map((status) => (
@@ -152,22 +185,13 @@ function CreateTicket({ onSubmit }) {
         <br />
         <br />
         <TextField
-          label="Labels"
-          variant="outlined"
-          fullWidth
-          value={labels}
-          onChange={(event) => setLabels(event.target.value)}
-        />
-        <br />
-        <br />
-        <TextField
           label="Due Date"
           variant="outlined"
           fullWidth
           type="date"
+          name="dueDate"
           InputLabelProps={{ shrink: true }}
-          value={dueDate}
-          onChange={(event) => setDueDate(event.target.value)}
+          onChange={handleChange}
         />
         <br />
         <br />
@@ -177,23 +201,23 @@ function CreateTicket({ onSubmit }) {
           fullWidth
           multiline
           rows={4}
-          value={comments}
-          onChange={(event) => setComments(event.target.value)}
+          name="comments"
+          onChange={handleChange}
         />
         <br />
         <br />
         <Button variant="contained" component="label">
           Upload Attachment
-          <input
-            type="file"
-            hidden
-            multiple
-            onChange={(event) => setAttachments(event.target.files)}
-          />
+          <input type="file" hidden multiple onChange={handleChange} />
         </Button>
         <br />
         <br />
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+        >
           Submit
         </Button>
       </Paper>

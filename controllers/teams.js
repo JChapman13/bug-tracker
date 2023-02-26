@@ -8,9 +8,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 async function createTeam(req, res) {
   const { teamName, leader, employees } = req.body;
-  console.log(teamName);
-  console.log(leader);
-  console.log(employees);
   try {
     const team = await Team.create({
       name: teamName,

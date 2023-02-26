@@ -75,7 +75,6 @@ async function getEmployees(req, res) {
 
 async function editEmployee(req, res) {
   try {
-    console.log("test");
     const { _id, firstName, lastName, email, role, team } = req.body;
     console.log(req.body);
 
